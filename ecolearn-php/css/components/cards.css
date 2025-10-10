@@ -1,0 +1,97 @@
+/* Card Component Styles */
+.stat-card {
+    background-color: var(--card-bg);
+    padding: 30px 25px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.analytic-stat-card {
+    padding: 15px 20px;
+    min-height: 120px; 
+    justify-content: space-between; 
+}
+
+.stat-card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.stat-card .value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.analytic-stat-card .value {
+    font-size: 1.8rem; 
+}
+
+.stat-card .label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.chart-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.action-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #bdc3c7;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.lesson-card.status-published { border-left-color: var(--status-published); }
+.lesson-card.status-draft { border-left-color: var(--status-draft); }
+.lesson-card.status-archived { border-left-color: var(--status-archived); }
+.lesson-card.status-trending { border-left-color: #f1c40f; }
+.lesson-card.status-recommended { border-left-color: var(--secondary-color); }
+.lesson-card.status-advanced { border-left-color: #9b59b6; }
+.lesson-card.status-completed { border-left-color: var(--secondary-color); }
+.lesson-card.status-overdue { border-left-color: var(--status-archived); }
+.lesson-card.status-submitted { border-left-color: #f1c40f; }
+
+.qr-focus-card {
+    margin-bottom: 25px;
+    border-left: 5px solid var(--secondary-color);
+}
+
+.qr-focus-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+.feature-card {
+    min-height: 120px;
+}

@@ -1,0 +1,81 @@
+/* Responsive Design Utilities */
+@media (max-width: 900px) {
+    .dashboard-main-area, .lessons-main-area {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 80px;
+        padding: 10px;
+        align-items: center;
+    }
+    
+    .sidebar h2, .sidebar span {
+        display: none;
+    }
+    
+    .sidebar .logo {
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .nav-item {
+        padding: 10px;
+        justify-content: center;
+    }
+    
+    .main-content {
+        margin-left: 80px; 
+    }
+    
+    .footer-nav-section {
+        padding-top: 5px;
+        border-top: none;
+    }
+    
+    .scroll-arrow { 
+        display: none; 
+    }
+    
+    .library-header, .catalogue-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .library-search-bar, .catalogue-search-bar {
+        width: 100%;
+        margin-top: 15px;
+    }
+    
+    .slider-container .lesson-card {
+        min-width: 80vw;
+        max-width: 80vw;
+    }
+    
+    .editor-content-area {
+        flex-direction: column;
+    }
+    
+    .editor-sidebar {
+        flex: none;
+        height: 200px;
+    }
+    
+    .modal-dialog.editor {
+        height: 95vh;
+    }
+}
+
+@media (max-width: 600px) {
+    .header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .header i {
+        font-size: 1.5rem;
+    }
+    
+    .lesson-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,156 @@
+/* Dynamic Catalogue Styles with Teacher Profiles and Background Images */
+
+.lesson-background-header {
+    position: relative;
+    height: 120px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.lesson-content {
+    padding: 0 15px 15px 15px;
+}
+
+.teacher-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.teacher-profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    object-fit: cover;
+}
+
+.teacher-profile-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: white;
+}
+
+.teacher-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.lesson-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+/* Updated lesson card to accommodate new structure */
+.lesson-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    position: relative;
+}
+
+.lesson-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Status badges positioning for new layout */
+.lesson-header-status {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Placeholder cards for empty slots */
+.lesson-placeholder-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lesson-placeholder-card:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    transform: translateY(-2px);
+}
+
+.placeholder-icon {
+    color: #adb5bd;
+    margin-bottom: 10px;
+}
+
+.placeholder-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Demo button for simulating teacher posts */
+.demo-controls {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.demo-button {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.demo-button:hover {
+    background: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .teacher-info {
+        gap: 6px;
+    }
+    
+    .teacher-profile-img,
+    .teacher-profile-placeholder {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .teacher-name {
+        font-size: 0.75rem;
+    }
+    
+    .lesson-background-header {
+        height: 100px;
+    }
+}

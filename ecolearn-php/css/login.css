@@ -1,0 +1,107 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* Body styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Modern gradient background */
+  background: linear-gradient(135deg, #007bff, #6610f2);
+}
+
+/* Card container for login/signup/guest */
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Card title */
+.auth-title {
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Input fields */
+.form-control {
+  border-radius: 10px;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-control:focus {
+  border-color: #6610f2;
+  box-shadow: 0 0 0 0.15rem rgba(102,16,242,0.25);
+  outline: none;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  border: none;
+  font-weight: 500;
+  padding: 0.75rem;
+  width: 100%;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Links */
+.text-link {
+  color: #6610f2;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+/* Small muted text */
+.text-muted {
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Spacing utilities */
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+
+/* Center form elements */
+.text-start {
+  text-align: left;
+}

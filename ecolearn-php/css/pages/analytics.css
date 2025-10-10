@@ -1,0 +1,65 @@
+/* Analytics Page Styles */
+.analytics-container .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.analytics-container .stat-card {
+    padding: 15px 20px;
+}
+
+.analytics-container .stat-card .value {
+    font-size: 1.8rem;
+}
+
+.leaderboard-list {
+    margin-top: 10px;
+}
+
+.activity-log {
+    margin-top: 15px;
+}
+
+.recent-activity-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 1rem;
+}
+
+.activity-icon.grade { background-color: #f1c40f; }
+.activity-icon.lesson { background-color: var(--secondary-color); }
+.activity-icon.activity { background-color: var(--primary-color); }
+
+.activity-details strong {
+    display: block;
+    color: var(--text-color);
+}
+
+.activity-details span {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.student-record-header {
+    display: flex; 
+    align-items: center; 
+    gap: 20px; 
+    margin-bottom: 20px;
+}
+
+.student-record-history {
+    max-height: 300px; 
+    overflow-y: auto;
+}

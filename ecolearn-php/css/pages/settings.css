@@ -1,0 +1,14 @@
+/* Settings Page Styles */
+.settings-section {
+    margin-bottom: 25px;
+}
+
+.settings-section h3 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+.settings-content-wrapper {
+    padding: 20px;
+}

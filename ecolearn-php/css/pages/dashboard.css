@@ -1,0 +1,58 @@
+/* Dashboard Page Styles */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 250px; 
+    width: auto;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.analytics-metric-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin-bottom: 25px;
+}
+
+.dashboard-main-area {
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard-main-area > div {
+    flex: 1;
+}
+
+.dashboard-top-margin {
+    margin-top: 20px;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.analytics-container .chart-container {
+    height: 250px;
+}
+
+.chart-card-flex-2 {
+    flex: 2;
+}

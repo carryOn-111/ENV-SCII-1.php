@@ -1,0 +1,106 @@
+/* Button Component Styles */
+.action-button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    background-color: white;
+    color: var(--primary-color);
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.action-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.action-button.primary:hover {
+    background-color: #27ae60;
+}
+
+.action-button.alt-button {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.action-button.alt-button:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.action-button.alt-button-top {
+    margin-top: 10px;
+}
+
+.action-button.qr-download-btn {
+    border-color: var(--primary-color); 
+    background-color: var(--primary-color); 
+    color: white;
+}
+
+.action-button.qr-download-btn:hover {
+    background-color: #27ae60;
+}
+
+.create-button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.create-button:hover {
+    background-color: #27ae60;
+}
+
+.action-small-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 5px;
+    transition: background-color 0.1s;
+}
+
+.action-small-btn i {
+    margin-right: 5px;
+}
+
+.action-small-btn.edit-btn { background-color: #3498db; color: white; }
+.action-small-btn.view-btn { background-color: #2ecc71; color: white; }
+.action-small-btn.delete-btn { background-color: #e74c3c; color: white; }
+.action-small-btn.publish-btn { background-color: #f1c40f; color: var(--text-color); }
+.action-small-btn.archive-btn { background-color: #95a5a6; color: white; }
+.action-small-btn.qr-btn { background-color: var(--secondary-color); color: white; }
+
+.apply-filter-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.apply-filter-btn:hover {
+    background-color: #2980b9;
+}

@@ -1,0 +1,19 @@
+/* Import all component styles */
+@import url('utilities/variables.css');
+@import url('utilities/responsive.css');
+@import url('components/buttons.css');
+@import url('components/cards.css');
+@import url('components/forms.css');
+@import url('components/header.css');
+@import url('components/library.css');
+@import url('components/modals.css');
+@import url('components/sidebar.css');
+@import url('components/status-bages.css');
+@import url('components/dynamic-catalogue.css');
+@import url('pages/analytics.css');
+@import url('pages/dashboard.css');
+@import url('pages/editor.css');
+@import url('pages/lessons.css');
+@import url('pages/profile.css');
+@import url('pages/settings.css');
+@import url('main.css');

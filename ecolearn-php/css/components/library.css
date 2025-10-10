@@ -1,0 +1,90 @@
+/* Library and Catalogue Component Styles */
+.library-search-bar, .catalogue-search-bar {
+    position: relative;
+    width: 250px;
+}
+
+.library-search-bar input, .catalogue-search-bar input {
+    width: 100%;
+    padding: 8px 10px 8px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.library-search-bar i, .catalogue-search-bar i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+.library-row-section, .catalogue-row-section {
+    margin-bottom: 30px;
+}
+
+.library-row-section h3, .catalogue-row-section h3 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    padding-left: 10px;
+}
+
+.library-subtitle, .catalogue-subtitle {
+    margin-left: 10px;
+    margin-top: -10px;
+}
+
+.library-slider, .catalogue-slider {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.slider-container {
+    display: flex;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px;
+    padding-bottom: 20px;
+    width: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.slider-container::-webkit-scrollbar {
+    display: none;
+}
+
+.slider-container .lesson-card {
+    min-width: 250px;
+    max-width: 250px;
+    flex-shrink: 0;
+}
+
+.scroll-arrow {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    position: absolute;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, color 0.2s;
+    color: var(--secondary-color);
+}
+
+.scroll-arrow:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.scroll-arrow.left { left: 0px; }
+.scroll-arrow.right { right: 0px; }
