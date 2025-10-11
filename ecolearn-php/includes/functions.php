@@ -46,9 +46,11 @@ class EcoLearnFunctions {
     
     // Lesson Management
     public function createLesson($title, $content, $teacher_id, $background_type = 'simple', $background_image = null) {
-        $query = "INSERT INTO lessons (title, content, teacher_id, background_type, background_image) VALUES (?, ?, ?, ?, ?)";
+        $qr_code = $this->generateQRCode("lesson_" . uniqid());
+        $query = "INSERT INTO lessons (title, content, teacher_id, background_type, background_image, qr_code, access_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([$title, $content, $teacher_id, $background_type, $background_image]);
+        $access_code = strtoupper(substr(md5(uniqid()), 0, 6));
+        $stmt->execute([$title, $content, $teacher_id, $background_type, $background_image, $qr_code, $access_code]);
         return $this->conn->lastInsertId();
     }
     
@@ -78,6 +80,15 @@ class EcoLearnFunctions {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
+    public function getLessonByAccessCode($access_code) {
+        $query = "SELECT l.*, u.full_name as teacher_name FROM lessons l 
+                  JOIN users u ON l.teacher_id = u.id 
+                  WHERE l.access_code = ? AND l.status = 'published'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$access_code]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
     public function getLessonSlides($lesson_id) {
         $query = "SELECT * FROM lesson_slides WHERE lesson_id = ? ORDER BY slide_number";
         $stmt = $this->conn->prepare($query);
@@ -93,9 +104,11 @@ class EcoLearnFunctions {
     
     // Activity Management
     public function createActivity($title, $description, $teacher_id, $activity_type, $due_date = null) {
-        $query = "INSERT INTO activities (title, description, teacher_id, type, due_date) VALUES (?, ?, ?, ?, ?)";
+        $qr_code = $this->generateQRCode("activity_" . uniqid());
+        $access_code = strtoupper(substr(md5(uniqid()), 0, 6));
+        $query = "INSERT INTO activities (title, description, teacher_id, type, due_date, qr_code, access_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([$title, $description, $teacher_id, $activity_type, $due_date]);
+        $stmt->execute([$title, $description, $teacher_id, $activity_type, $due_date, $qr_code, $access_code]);
         return $this->conn->lastInsertId();
     }
     
@@ -128,6 +141,15 @@ class EcoLearnFunctions {
                   WHERE a.id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$activity_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function getActivityByAccessCode($access_code) {
+        $query = "SELECT a.*, u.full_name as teacher_name FROM activities a 
+                  JOIN users u ON a.teacher_id = u.id 
+                  WHERE a.access_code = ? AND a.status = 'published'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$access_code]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
@@ -256,6 +278,44 @@ class EcoLearnFunctions {
         return $stmt->execute([$student_id, $activity_id]);
     }
     
+    // Guest user progress tracking
+    public function getGuestProgress() {
+        return [
+            'lessons_viewed' => 0,
+            'activities_completed' => 0,
+            'average_score' => 0
+        ];
+    }
+    
+    public function getStudentProgress($student_id) {
+        if (strpos($student_id, 'guest_') === 0) {
+            return $this->getGuestProgress();
+        }
+        
+        // For registered users, calculate actual progress
+        $analytics = [];
+        
+        // Lessons viewed
+        $query = "SELECT COUNT(DISTINCT lesson_id) as lessons_viewed FROM lesson_views WHERE student_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$student_id]);
+        $analytics['lessons_viewed'] = $stmt->fetchColumn() ?: 0;
+        
+        // Activities completed
+        $query = "SELECT COUNT(*) as activities_completed FROM student_submissions WHERE student_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$student_id]);
+        $analytics['activities_completed'] = $stmt->fetchColumn() ?: 0;
+        
+        // Average score
+        $query = "SELECT AVG(total_score) as average_score FROM student_submissions WHERE student_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$student_id]);
+        $analytics['average_score'] = $stmt->fetchColumn() ?: 0;
+        
+        return $analytics;
+    }
+    
     // Analytics
     public function getTeacherAnalytics($teacher_id) {
         $analytics = [];
@@ -292,5 +352,44 @@ class EcoLearnFunctions {
     public function generateQRCode($text) {
         return "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($text);
     }
+    
+    public function formatDate($date) {
+        return date('M j, Y', strtotime($date));
+    }
+}
+
+// Helper functions for backward compatibility
+function getCurrentUser() {
+    require_once 'config/session.php';
+    return getCurrentUser();
+}
+
+function getLessonsByTeacher($teacher_id) {
+    $functions = new EcoLearnFunctions();
+    return $functions->getTeacherLessons($teacher_id);
+}
+
+function getActivitiesByTeacher($teacher_id) {
+    $functions = new EcoLearnFunctions();
+    return $functions->getTeacherActivities($teacher_id);
+}
+
+function getPublishedLessons() {
+    $functions = new EcoLearnFunctions();
+    return $functions->getPublishedLessons();
+}
+
+function getPublishedActivities() {
+    $functions = new EcoLearnFunctions();
+    return $functions->getPublishedActivities();
+}
+
+function getStudentProgress($student_id) {
+    $functions = new EcoLearnFunctions();
+    return $functions->getStudentProgress($student_id);
+}
+
+function formatDate($date) {
+    return date('M j, Y', strtotime($date));
 }
 ?>

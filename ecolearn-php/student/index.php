@@ -1,7 +1,12 @@
 <?php
-require_once '../includes/auth.php';
+require_once '../config/session.php';
 require_once '../includes/functions.php';
-requireRole('student');
+
+// Allow both students and guests
+if (!isLoggedIn() || ($_SESSION['user_role'] !== 'student' && $_SESSION['user_role'] !== 'guest')) {
+    header('Location: ../login.php');
+    exit();
+}
 
 $user = getCurrentUser();
 $progress = getStudentProgress($user['id']);
@@ -17,8 +22,16 @@ $available_activities = getPublishedActivities();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/guest.css">
 </head>
 <body>
+    <?php if (isGuest()): ?>
+    <div class="guest-banner">
+        <i class="fas fa-info-circle"></i>
+        You're browsing as a guest. <a href="../register.php" style="color: #333; text-decoration: underline;">Create an account</a> to save your progress and unlock all features.
+    </div>
+    <?php endif; ?>
+
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo">
@@ -47,14 +60,14 @@ $available_activities = getPublishedActivities();
                 <span>My Activities</span>
             </div>
             
-            <div class="nav-item student-progress" onclick="loadStudentContent('progress')">
+            <div class="nav-item student-progress <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="loadStudentContent('progress')">
                 <i class="fas fa-chart-bar"></i>
                 <span>My Progress</span>
             </div>
         </div>
         
         <div class="footer-nav-section">
-            <div class="nav-item profile" onclick="loadStudentContent('profile')">
+            <div class="nav-item profile <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="loadStudentContent('profile')">
                 <i class="fas fa-user-circle"></i>
                 <span>Profile</span>
             </div>
@@ -64,7 +77,7 @@ $available_activities = getPublishedActivities();
             </div>
             <div class="nav-item logout" onclick="window.location.href='../logout.php'">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
+                <span><?php echo isGuest() ? 'Exit' : 'Logout'; ?></span>
             </div>
         </div>
     </nav>
@@ -76,10 +89,30 @@ $available_activities = getPublishedActivities();
             <h1>Student Learning Space</h1>
             <div class="user-info">
                 Welcome, <?php echo htmlspecialchars($user['full_name']); ?>
+                <?php if (isGuest()): ?>
+                    <span class="guest-indicator">GUEST</span>
+                <?php endif; ?>
             </div>
         </header>
         
         <div id="content">
+            <?php if (isGuest()): ?>
+            <div class="guest-limitations">
+                <h5><i class="fas fa-exclamation-triangle"></i> Guest Mode Limitations</h5>
+                <ul>
+                    <li>Progress is not saved permanently</li>
+                    <li>Limited access to advanced features</li>
+                    <li>No personalized recommendations</li>
+                    <li>Cannot submit assignments for grading</li>
+                </ul>
+                <div class="guest-upgrade-prompt">
+                    <h6>Ready for the full experience?</h6>
+                    <p>Create a free account to unlock all features and save your progress!</p>
+                    <a href="../register.php" class="btn btn-light btn-sm">Create Account</a>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- Student Dashboard Content -->
             <div class="dashboard-grid">
                 <div class="stat-card">
@@ -111,7 +144,7 @@ $available_activities = getPublishedActivities();
                     <div class="stat-content">
                         <h3><?php echo number_format($progress['average_score'], 1); ?>%</h3>
                         <p>Average Score</p>
-                        <small>Keep it up!</small>
+                        <small><?php echo isGuest() ? 'Guest Mode' : 'Keep it up!'; ?></small>
                     </div>
                 </div>
                 
@@ -142,7 +175,7 @@ $available_activities = getPublishedActivities();
                         <p>Access content shared by your teacher</p>
                     </button>
                     
-                    <button class="action-card" onclick="loadStudentContent('progress')">
+                    <button class="action-card <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="loadStudentContent('progress')">
                         <i class="fas fa-chart-line"></i>
                         <h3>View Progress</h3>
                         <p>Track your learning journey</p>
@@ -163,6 +196,9 @@ $available_activities = getPublishedActivities();
                                         <h4><?php echo htmlspecialchars($lesson['title']); ?></h4>
                                         <p>By: <?php echo htmlspecialchars($lesson['teacher_name']); ?></p>
                                         <p>Published: <?php echo formatDate($lesson['created_at']); ?></p>
+                                        <?php if (isset($lesson['access_code'])): ?>
+                                            <small class="text-muted">Access Code: <strong><?php echo $lesson['access_code']; ?></strong></small>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="content-actions">
                                         <button class="action-small-btn view-btn" onclick="viewLesson(<?php echo $lesson['id']; ?>)">
@@ -188,6 +224,9 @@ $available_activities = getPublishedActivities();
                                         <p>Type: <?php echo $activity['type']; ?> | By: <?php echo htmlspecialchars($activity['teacher_name']); ?></p>
                                         <?php if ($activity['due_date']): ?>
                                             <p>Due: <?php echo formatDate($activity['due_date']); ?></p>
+                                        <?php endif; ?>
+                                        <?php if (isset($activity['access_code'])): ?>
+                                            <small class="text-muted">Access Code: <strong><?php echo $activity['access_code']; ?></strong></small>
                                         <?php endif; ?>
                                     </div>
                                     <div class="content-actions">
@@ -222,7 +261,7 @@ $available_activities = getPublishedActivities();
             <form onsubmit="event.preventDefault(); accessResource();">
                 <div class="filter-group">
                     <label for="resourceCode">Or Enter 6-Digit Code:</label>
-                    <input type="text" id="resourceCode" maxlength="6" required class="resource-input">
+                    <input type="text" id="resourceCode" maxlength="6" required class="resource-input" placeholder="ABC123">
                 </div>
                 <button type="submit" class="apply-filter-btn primary">
                     <i class="fas fa-play-circle"></i> Access Resource
@@ -239,7 +278,10 @@ $available_activities = getPublishedActivities();
             });
             
             // Add active class to clicked item
-            document.querySelector(`.nav-item.${section}`).classList.add('active');
+            const navItem = document.querySelector(`.nav-item.${section}`);
+            if (navItem && !navItem.classList.contains('guest-disabled')) {
+                navItem.classList.add('active');
+            }
             
             // Load content based on section
             switch(section) {
@@ -253,7 +295,18 @@ $available_activities = getPublishedActivities();
                     window.location.href = 'activities.php';
                     break;
                 case 'progress':
+                    <?php if (isGuest()): ?>
+                    alert('Progress tracking requires an account. Please register to access this feature.');
+                    <?php else: ?>
                     alert('Progress tracking coming soon!');
+                    <?php endif; ?>
+                    break;
+                case 'profile':
+                    <?php if (isGuest()): ?>
+                    alert('Profile management requires an account. Please register to access this feature.');
+                    <?php else: ?>
+                    alert('Profile management coming soon!');
+                    <?php endif; ?>
                     break;
                 case 'dashboard':
                     window.location.reload();
@@ -272,8 +325,33 @@ $available_activities = getPublishedActivities();
         }
         
         function accessResource() {
-            const code = document.getElementById('resourceCode').value;
-            alert('Resource access with code: ' + code + ' - Feature coming soon!');
+            const code = document.getElementById('resourceCode').value.toUpperCase();
+            
+            // Try to access lesson or activity by code
+            fetch('../api/access-resource.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ access_code: code })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.type === 'lesson') {
+                        window.location.href = 'lesson-viewer.php?id=' + data.id;
+                    } else if (data.type === 'activity') {
+                        window.location.href = 'activity-viewer.php?id=' + data.id;
+                    }
+                } else {
+                    alert('Invalid access code. Please check the code and try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error accessing resource. Please try again.');
+            });
+            
             hideModal('qrScannerModal');
         }
         
@@ -351,7 +429,7 @@ $available_activities = getPublishedActivities();
             transition: transform 0.3s, box-shadow 0.3s;
         }
         
-        .action-card:hover {
+        .action-card:hover:not(.guest-disabled) {
             transform: translateY(-5px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
@@ -390,6 +468,9 @@ $available_activities = getPublishedActivities();
         .user-info {
             color: #7f8c8d;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .no-content {
@@ -429,6 +510,7 @@ $available_activities = getPublishedActivities();
             font-size: 16px;
             text-align: center;
             letter-spacing: 2px;
+            text-transform: uppercase;
         }
         
         .apply-filter-btn {

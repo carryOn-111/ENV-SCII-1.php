@@ -1,0 +1,79 @@
+/* Guest-specific styles */
+.guest-banner {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+    color: #333;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.guest-banner i {
+    margin-right: 8px;
+}
+
+.guest-limitations {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.guest-limitations h5 {
+    margin-bottom: 10px;
+    color: #856404;
+}
+
+.guest-limitations ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.guest-upgrade-prompt {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.guest-upgrade-prompt .btn {
+    margin-top: 10px;
+}
+
+.guest-indicator {
+    display: inline-block;
+    background: #ffc107;
+    color: #212529;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Disable certain features for guests */
+.guest-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.guest-disabled::after {
+    content: "Account Required";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}

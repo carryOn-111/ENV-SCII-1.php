@@ -1,4 +1,10 @@
 <?php
-require_once 'includes/auth.php';
-logout();
+require_once 'config/session.php';
+
+// Destroy the session
+session_destroy();
+
+// Redirect to home page
+header('Location: index.php');
+exit();
 ?>

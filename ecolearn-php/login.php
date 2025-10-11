@@ -10,6 +10,8 @@ if (isLoggedIn()) {
         header('Location: teacher/dashboard.php');
     } else if ($_SESSION['user_role'] === 'student') {
         header('Location: student/dashboard.php');
+    } else if ($_SESSION['user_role'] === 'guest') {
+        header('Location: student/dashboard.php');
     }
     exit();
 }
@@ -42,6 +44,7 @@ if (isset($_GET['timeout'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EcoLearn Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
@@ -74,7 +77,17 @@ if (isset($_GET['timeout'])) {
   <!-- Extra Options -->
   <div class="d-grid gap-2">
     <a href="register.php" class="btn btn-outline-primary w-100">Create Account</a>
+    <a href="guest-login.php" class="btn btn-outline-success w-100">
+      <i class="fas fa-user-friends"></i> Try as Guest
+    </a>
     <a href="index.php" class="btn btn-outline-secondary w-100">Back to Home</a>
+  </div>
+
+  <div class="mt-4">
+    <small class="text-muted">
+      <i class="fas fa-info-circle"></i> 
+      New to EcoLearn? Try our guest access to explore lessons and activities without creating an account.
+    </small>
   </div>
 </div>
 

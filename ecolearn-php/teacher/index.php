@@ -1,11 +1,13 @@
 <?php
-require_once '../includes/auth.php';
+require_once '../config/session.php';
 require_once '../includes/functions.php';
+
 requireRole('teacher');
 
 $user = getCurrentUser();
-$lessons = getLessonsByTeacher($user['id']);
-$activities = getActivitiesByTeacher($user['id']);
+$functions = new EcoLearnFunctions();
+$lessons = $functions->getTeacherLessons($user['id']);
+$activities = $functions->getTeacherActivities($user['id']);
 
 // Get some basic statistics
 $total_lessons = count($lessons);
@@ -73,8 +75,8 @@ $published_activities = count(array_filter($activities, function($a) { return $a
     <!-- Main Content Area -->
     <div class="main-content">
         <header class="header">
-            <i class="fas fa-graduation-cap"></i>
-            <h1>Environmental Science Learning Platform</h1>
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h1>Teacher Dashboard - Environmental Science Learning Platform</h1>
             <div class="user-info">
                 Welcome, <?php echo htmlspecialchars($user['full_name']); ?>
             </div>
@@ -118,12 +120,12 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                 
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-qrcode"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>-</h3>
-                        <p>Avg. Score</p>
-                        <small>Coming Soon</small>
+                        <h3><?php echo $published_lessons + $published_activities; ?></h3>
+                        <p>QR Codes Generated</p>
+                        <small>For easy access</small>
                     </div>
                 </div>
             </div>
@@ -134,13 +136,13 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                     <button class="action-card" onclick="showCreateLessonModal()">
                         <i class="fas fa-plus-circle"></i>
                         <h3>Create New Lesson</h3>
-                        <p>Design interactive environmental science lessons</p>
+                        <p>Design interactive environmental science lessons with QR access</p>
                     </button>
                     
                     <button class="action-card" onclick="showCreateActivityModal()">
                         <i class="fas fa-tasks"></i>
                         <h3>Create New Activity</h3>
-                        <p>Build quizzes, projects, and assessments</p>
+                        <p>Build quizzes, projects, and assessments with instant access codes</p>
                     </button>
                     
                     <button class="action-card" onclick="loadContent('analytics')">
@@ -153,7 +155,7 @@ $published_activities = count(array_filter($activities, function($a) { return $a
             
             <div class="recent-content">
                 <div class="recent-section">
-                    <h3>Recent Lessons</h3>
+                    <h3>Recent Lessons <span class="section-badge"><?php echo count($lessons); ?></span></h3>
                     <div class="content-list">
                         <?php if (empty($lessons)): ?>
                             <p class="no-content">No lessons created yet. <a href="#" onclick="showCreateLessonModal()">Create your first lesson</a></p>
@@ -163,11 +165,24 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                                     <div class="content-info">
                                         <h4><?php echo htmlspecialchars($lesson['title']); ?></h4>
                                         <p>Created: <?php echo formatDate($lesson['created_at']); ?></p>
+                                        <?php if ($lesson['status'] === 'published' && isset($lesson['access_code'])): ?>
+                                            <div class="access-info">
+                                                <span class="access-code">Code: <strong><?php echo $lesson['access_code']; ?></strong></span>
+                                                <button class="btn-qr-small" onclick="showQRCode('<?php echo $lesson['qr_code']; ?>', '<?php echo htmlspecialchars($lesson['title']); ?>', '<?php echo $lesson['access_code']; ?>')">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="content-status">
                                         <span class="status-badge status-<?php echo $lesson['status']; ?>">
                                             <?php echo ucfirst($lesson['status']); ?>
                                         </span>
+                                        <?php if ($lesson['status'] === 'draft'): ?>
+                                            <button class="btn-publish" onclick="publishContent('lesson', <?php echo $lesson['id']; ?>)">
+                                                <i class="fas fa-upload"></i> Publish
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -176,7 +191,7 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                 </div>
                 
                 <div class="recent-section">
-                    <h3>Recent Activities</h3>
+                    <h3>Recent Activities <span class="section-badge"><?php echo count($activities); ?></span></h3>
                     <div class="content-list">
                         <?php if (empty($activities)): ?>
                             <p class="no-content">No activities created yet. <a href="#" onclick="showCreateActivityModal()">Create your first activity</a></p>
@@ -186,11 +201,24 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                                     <div class="content-info">
                                         <h4><?php echo htmlspecialchars($activity['title']); ?></h4>
                                         <p>Type: <?php echo $activity['type']; ?> | Created: <?php echo formatDate($activity['created_at']); ?></p>
+                                        <?php if ($activity['status'] === 'published' && isset($activity['access_code'])): ?>
+                                            <div class="access-info">
+                                                <span class="access-code">Code: <strong><?php echo $activity['access_code']; ?></strong></span>
+                                                <button class="btn-qr-small" onclick="showQRCode('<?php echo $activity['qr_code']; ?>', '<?php echo htmlspecialchars($activity['title']); ?>', '<?php echo $activity['access_code']; ?>')">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="content-status">
                                         <span class="status-badge status-<?php echo $activity['status']; ?>">
                                             <?php echo ucfirst($activity['status']); ?>
                                         </span>
+                                        <?php if ($activity['status'] === 'draft'): ?>
+                                            <button class="btn-publish" onclick="publishContent('activity', <?php echo $activity['id']; ?>)">
+                                                <i class="fas fa-upload"></i> Publish
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -235,6 +263,16 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                     </div>
                 </div>
 
+                <div class="access-preview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h6><i class="fas fa-info-circle"></i> Access Information</h6>
+                    <p style="margin: 5px 0; font-size: 14px;">After publishing, students can access this lesson by:</p>
+                    <ul style="margin: 5px 0; padding-left: 20px; font-size: 14px;">
+                        <li>Scanning the generated QR code</li>
+                        <li>Entering the 6-digit access code</li>
+                        <li>Browsing the student catalogue</li>
+                    </ul>
+                </div>
+
                 <button type="submit" class="action-button" style="width: 100%;">
                     <i class="fas fa-save"></i> Create Lesson
                 </button>
@@ -257,6 +295,10 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                     <input type="text" id="activityTitle" name="title" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
                 <div style="margin-bottom: 15px;">
+                    <label for="activityDescription" style="display: block; font-weight: 600; margin-bottom: 5px;">Description:</label>
+                    <textarea id="activityDescription" name="description" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                </div>
+                <div style="margin-bottom: 15px;">
                     <label for="activityType" style="display: block; font-weight: 600; margin-bottom: 5px;">Activity Type:</label>
                     <select id="activityType" name="type" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                         <option value="Quiz">Quiz / Assessment</option>
@@ -265,14 +307,58 @@ $published_activities = count(array_filter($activities, function($a) { return $a
                     </select>
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label for="activityDueDate" style="display: block; font-weight: 600; margin-bottom: 5px;">Due Date:</label>
+                    <label for="activityDueDate" style="display: block; font-weight: 600; margin-bottom: 5px;">Due Date (Optional):</label>
                     <input type="date" id="activityDueDate" name="due_date" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div class="access-preview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h6><i class="fas fa-info-circle"></i> Access Information</h6>
+                    <p style="margin: 5px 0; font-size: 14px;">After publishing, students can access this activity by:</p>
+                    <ul style="margin: 5px 0; padding-left: 20px; font-size: 14px;">
+                        <li>Scanning the generated QR code</li>
+                        <li>Entering the 6-digit access code</li>
+                        <li>Browsing the student catalogue</li>
+                    </ul>
                 </div>
 
                 <button type="submit" class="action-button" style="width: 100%; background-color: var(--secondary-color);">
                     <i class="fas fa-tasks"></i> Create Activity
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- QR Code Display Modal -->
+    <div id="qrCodeModal" class="modal-overlay" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-header-content">
+                <h3><i class="fas fa-qrcode"></i> QR Code & Access Information</h3>
+                <button onclick="hideModal('qrCodeModal')" class="modal-close-btn">&times;</button>
+            </div>
+            
+            <div class="qr-display">
+                <div class="qr-code-container">
+                    <img id="qrCodeImage" src="" alt="QR Code" style="width: 200px; height: 200px; border: 1px solid #ddd;">
+                </div>
+                <div class="access-details">
+                    <h4 id="contentTitle"></h4>
+                    <div class="access-code-display">
+                        <label>Access Code:</label>
+                        <span id="accessCodeDisplay" class="code-highlight"></span>
+                        <button onclick="copyAccessCode()" class="btn-copy">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="instructions">
+                        <h6>How students can access:</h6>
+                        <ol>
+                            <li>Scan this QR code with their device camera</li>
+                            <li>Enter the access code in the student portal</li>
+                            <li>Browse the catalogue in their dashboard</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -316,6 +402,45 @@ $published_activities = count(array_filter($activities, function($a) { return $a
         function hideModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
+
+        function showQRCode(qrCodeUrl, title, accessCode) {
+            document.getElementById('qrCodeImage').src = qrCodeUrl;
+            document.getElementById('contentTitle').textContent = title;
+            document.getElementById('accessCodeDisplay').textContent = accessCode;
+            document.getElementById('qrCodeModal').style.display = 'flex';
+        }
+
+        function copyAccessCode() {
+            const accessCode = document.getElementById('accessCodeDisplay').textContent;
+            navigator.clipboard.writeText(accessCode).then(() => {
+                alert('Access code copied to clipboard!');
+            });
+        }
+
+        function publishContent(type, id) {
+            if (confirm(`Are you sure you want to publish this ${type}? Students will be able to access it immediately.`)) {
+                fetch(`../api/${type}s.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=publish&id=${id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} published successfully!`);
+                        window.location.reload();
+                    } else {
+                        alert(`Error publishing ${type}: ` + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(`Error publishing ${type}`);
+                });
+            }
+        }
         
         // Handle form submissions
         document.getElementById('newLessonForm').addEventListener('submit', function(e) {
@@ -330,7 +455,7 @@ $published_activities = count(array_filter($activities, function($a) { return $a
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Lesson created successfully!');
+                    alert('Lesson created successfully! You can now publish it to generate QR code and access code.');
                     hideModal('createLessonModal');
                     window.location.reload();
                 } else {
@@ -355,7 +480,7 @@ $published_activities = count(array_filter($activities, function($a) { return $a
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Activity created successfully!');
+                    alert('Activity created successfully! You can now publish it to generate QR code and access code.');
                     hideModal('createActivityModal');
                     window.location.reload();
                 } else {
@@ -447,17 +572,87 @@ $published_activities = count(array_filter($activities, function($a) { return $a
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
+        .recent-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
         
         .content-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             padding: 15px 0;
             border-bottom: 1px solid #ecf0f1;
         }
         
         .content-item:last-child {
             border-bottom: none;
+        }
+
+        .content-info {
+            flex: 1;
+        }
+
+        .content-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .access-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .access-code {
+            font-size: 12px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-qr-small {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-qr-small:hover {
+            background: #219a52;
+        }
+
+        .btn-publish {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-publish:hover {
+            background: #e67e22;
         }
         
         .status-badge {
@@ -500,6 +695,82 @@ $published_activities = count(array_filter($activities, function($a) { return $a
         
         .no-content a:hover {
             text-decoration: underline;
+        }
+
+        .access-preview {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .qr-display {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .qr-code-container {
+            text-align: center;
+        }
+
+        .access-details {
+            flex: 1;
+        }
+
+        .access-code-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .code-highlight {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            background: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-copy {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-copy:hover {
+            background: #219a52;
+        }
+
+        .instructions {
+            margin-top: 20px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .qr-display {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .recent-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </body>

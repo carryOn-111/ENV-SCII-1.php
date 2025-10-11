@@ -14,6 +14,10 @@ function isLoggedIn() {
     return isset($_SESSION['user_id']) && isset($_SESSION['user_role']);
 }
 
+function isGuest() {
+    return isset($_SESSION['is_guest']) && $_SESSION['is_guest'] === true;
+}
+
 function requireLogin() {
     if (!isLoggedIn()) {
         header('Location: /ecolearn-php/login.php');
@@ -23,7 +27,7 @@ function requireLogin() {
 
 function requireRole($role) {
     requireLogin();
-    if ($_SESSION['user_role'] !== $role) {
+    if ($_SESSION['user_role'] !== $role && !($role === 'student' && $_SESSION['user_role'] === 'guest')) {
         header('Location: /ecolearn-php/index.php');
         exit();
     }
@@ -38,6 +42,31 @@ function checkSessionTimeout() {
         }
     }
     $_SESSION['last_activity'] = time();
+}
+
+function getCurrentUser() {
+    if (!isLoggedIn()) {
+        return null;
+    }
+    
+    if (isGuest()) {
+        return [
+            'id' => $_SESSION['user_id'],
+            'username' => $_SESSION['user_id'],
+            'full_name' => $_SESSION['user_name'],
+            'email' => '',
+            'role' => 'guest'
+        ];
+    }
+    
+    // For registered users, you might want to fetch from database
+    return [
+        'id' => $_SESSION['user_id'],
+        'username' => $_SESSION['user_name'] ?? '',
+        'full_name' => $_SESSION['user_name'],
+        'email' => $_SESSION['user_email'] ?? '',
+        'role' => $_SESSION['user_role']
+    ];
 }
 
 // Check session timeout on every page load

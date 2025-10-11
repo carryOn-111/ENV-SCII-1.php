@@ -11,6 +11,8 @@ if (isLoggedIn()) {
         header('Location: teacher/dashboard.php');
     } else if ($_SESSION['user_role'] === 'student') {
         header('Location: student/dashboard.php');
+    } else if ($_SESSION['user_role'] === 'guest') {
+        header('Location: student/dashboard.php');
     }
     exit();
 }
@@ -29,7 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $result = $auth->register($username, $email, $password, $user_type, $name);
         if ($result === 'success') {
-            $success_message = 'Account created successfully! You can now log in.';
+            // Auto-login the user after successful registration
+            $login_result = $auth->login($email, $password);
+            if ($login_result === true) {
+                // Redirect will happen in the login method
+                exit();
+            } else {
+                $success_message = 'Account created successfully! You can now log in.';
+            }
         } else {
             $error_message = $result;
         }
@@ -45,11 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Create Account - EcoLearn</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
 <div class="auth-card text-center">
+  <div class="mb-3">
+    <i class="fas fa-user-plus fa-3x" style="color: #00ff88;"></i>
+  </div>
   <h3 class="auth-title mb-3">Create Your Account</h3>
   <p class="text-muted mb-4">Join our learning community</p>
 
@@ -80,22 +93,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="password" class="form-control" name="password" placeholder="Create a password" required>
     </div>
     <div class="mb-3 text-start">
-      <label class="form-label">User Type</label>
+      <label class="form-label">I am a...</label>
       <select class="form-select" name="user_type" required>
-        <option value="">Select Type</option>
-        <option value="student" <?php echo (($_POST['user_type'] ?? '') === 'student') ? 'selected' : ''; ?>>Student</option>
-        <option value="teacher" <?php echo (($_POST['user_type'] ?? '') === 'teacher') ? 'selected' : ''; ?>>Teacher</option>
+        <option value="">Select your role</option>
+        <option value="student" <?php echo (($_POST['user_type'] ?? '') === 'student') ? 'selected' : ''; ?>>
+          <i class="fas fa-graduation-cap"></i> Student - I want to learn and take courses
+        </option>
+        <option value="teacher" <?php echo (($_POST['user_type'] ?? '') === 'teacher') ? 'selected' : ''; ?>>
+          <i class="fas fa-chalkboard-teacher"></i> Teacher - I want to create and share lessons
+        </option>
       </select>
+      <small class="form-text text-muted">
+        Choose your role to get the right dashboard and features for your needs.
+      </small>
     </div>
-    <button type="submit" class="btn btn-primary w-100 py-2">Sign Up</button>
+    <button type="submit" class="btn btn-primary w-100 py-2">
+      <i class="fas fa-user-plus"></i> Create Account & Login
+    </button>
   </form>
 
   <div class="mt-4">
     <p class="text-muted">Already have an account? 
       <a href="login.php" class="text-link">Login here</a>
     </p>
+    <p class="text-muted">Just want to explore? 
+      <a href="guest-login.php" class="text-link">Try as guest</a>
+    </p>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
