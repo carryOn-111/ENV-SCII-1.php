@@ -1,28 +1,269 @@
-/* Status Badge Styles */
+/* Status Badge Components */
+
 .status-badge {
-    font-size: 0.75rem;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Status Colors */
+.status-published {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--status-published);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.status-draft {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: var(--status-draft);
+    border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.status-archived {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--status-archived);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.status-pending {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--secondary-color);
+    border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.status-active {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--status-published);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.status-inactive {
+    background-color: rgba(149, 165, 166, 0.1);
+    color: #95a5a6;
+    border: 1px solid rgba(149, 165, 166, 0.2);
+}
+
+.status-completed {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--status-published);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.status-in-progress {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--secondary-color);
+    border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.status-not-started {
+    background-color: rgba(149, 165, 166, 0.1);
+    color: #95a5a6;
+    border: 1px solid rgba(149, 165, 166, 0.2);
+}
+
+/* Priority Badges */
+.priority-high {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--status-archived);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.priority-medium {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: var(--status-draft);
+    border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.priority-low {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--status-published);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+/* Difficulty Badges */
+.difficulty-beginner {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--status-published);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.difficulty-intermediate {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: var(--status-draft);
+    border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.difficulty-advanced {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--status-archived);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Badge Sizes */
+.status-badge.badge-sm {
+    padding: 2px 6px;
+    font-size: 10px;
+}
+
+.status-badge.badge-lg {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+/* Badge with Icon */
+.status-badge .badge-icon {
+    font-size: 10px;
+}
+
+.status-badge.badge-lg .badge-icon {
+    font-size: 12px;
+}
+
+/* Animated Badges */
+.status-badge.animated {
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Badge Groups */
+.badge-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.badge-group .status-badge {
+    margin: 0;
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: relative;
+}
+
+.notification-badge::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--status-archived);
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* Count Badge */
+.count-badge {
+    background-color: var(--status-archived);
     color: white;
+    border: none;
+    min-width: 20px;
+    text-align: center;
 }
 
-.status-badge.published { background-color: var(--status-published); }
-.status-badge.draft { background-color: var(--status-draft); }
-.status-badge.archived { background-color: var(--status-archived); }
-.status-badge.trending { background-color: #f1c40f; }
-.status-badge.recommended { background-color: var(--secondary-color); }
-.status-badge.new-post { background-color: #2c3e50; }
-.status-badge.advanced { background-color: #9b59b6; }
-.status-badge.completed { background-color: var(--secondary-color); }
-.status-badge.overdue { background-color: var(--status-archived); }
-.status-badge.submitted { background-color: #f1c40f; }
-
-.action-list {
-    list-style: none;
-    margin-top: 15px;
+.count-badge.count-primary {
+    background-color: var(--primary-color);
 }
 
-.action-list li {
-    margin-bottom: 10px;
+.count-badge.count-secondary {
+    background-color: var(--secondary-color);
+}
+
+/* Removable Badge */
+.status-badge.removable {
+    padding-right: 24px;
+    position: relative;
+}
+
+.status-badge.removable .remove-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.status-badge.removable .remove-btn:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Interactive Badge */
+.status-badge.interactive {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.status-badge.interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Outline Badges */
+.status-badge.outline {
+    background-color: transparent;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.status-badge.outline.status-published {
+    color: var(--status-published);
+    border-color: var(--status-published);
+}
+
+.status-badge.outline.status-draft {
+    color: var(--status-draft);
+    border-color: var(--status-draft);
+}
+
+.status-badge.outline.status-archived {
+    color: var(--status-archived);
+    border-color: var(--status-archived);
+}
+
+/* Solid Badges */
+.status-badge.solid.status-published {
+    background-color: var(--status-published);
+    color: white;
+    border-color: var(--status-published);
+}
+
+.status-badge.solid.status-draft {
+    background-color: var(--status-draft);
+    color: white;
+    border-color: var(--status-draft);
+}
+
+.status-badge.solid.status-archived {
+    background-color: var(--status-archived);
+    color: white;
+    border-color: var(--status-archived);
 }

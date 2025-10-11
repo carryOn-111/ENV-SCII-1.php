@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 class EcoLearnFunctions {
     private $conn;
@@ -358,20 +358,10 @@ class EcoLearnFunctions {
     }
 }
 
-// Helper functions for backward compatibility
-function getCurrentUser() {
-    require_once 'config/session.php';
-    return getCurrentUser();
-}
-
-function getLessonsByTeacher($teacher_id) {
+// Global wrapper functions for backward compatibility
+function getStudentProgress($student_id) {
     $functions = new EcoLearnFunctions();
-    return $functions->getTeacherLessons($teacher_id);
-}
-
-function getActivitiesByTeacher($teacher_id) {
-    $functions = new EcoLearnFunctions();
-    return $functions->getTeacherActivities($teacher_id);
+    return $functions->getStudentProgress($student_id);
 }
 
 function getPublishedLessons() {
@@ -384,12 +374,13 @@ function getPublishedActivities() {
     return $functions->getPublishedActivities();
 }
 
-function getStudentProgress($student_id) {
+function formatDate($date) {
     $functions = new EcoLearnFunctions();
-    return $functions->getStudentProgress($student_id);
+    return $functions->formatDate($date);
 }
 
-function formatDate($date) {
-    return date('M j, Y', strtotime($date));
+function getLessonsByTeacher($teacher_id) {
+    $functions = new EcoLearnFunctions();
+    return $functions->getTeacherLessons($teacher_id);
 }
 ?>

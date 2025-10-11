@@ -2,8 +2,8 @@
 // Database Configuration
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'ecolearn_db');
-define('DB_USER', 'your_username');
-define('DB_PASS', 'your_password');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 class Database {
