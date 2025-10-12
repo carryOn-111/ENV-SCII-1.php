@@ -1,4 +1,39 @@
-// Teacher Dashboard Page Functions
+// Dynamic Teacher Dashboard - Connected to PHP Backend
+let lessonsData = []; // Will be populated from API
+let activitiesData = []; // Will be populated from API
+
+async function initializeTeacherDashboard() {
+    try {
+        // Load initial data
+        await loadLessonsData();
+        await loadActivitiesData();
+        
+        // Render lessons by default
+        renderLessons('all');
+    } catch (error) {
+        console.error('Error initializing dashboard:', error);
+        showErrorMessage('Failed to load dashboard data');
+    }
+}
+
+async function loadLessonsData() {
+    try {
+        lessonsData = await dynamicData.getLessonsData();
+    } catch (error) {
+        console.error('Error loading lessons:', error);
+        lessonsData = [];
+    }
+}
+
+async function loadActivitiesData() {
+    try {
+        activitiesData = await dynamicData.getActivitiesData();
+    } catch (error) {
+        console.error('Error loading activities:', error);
+        activitiesData = [];
+    }
+}
+
 function renderLessons(filterStatus = 'all') {
     const lessonGrid = document.getElementById('lessonGrid');
     if (!lessonGrid) return; 
@@ -32,7 +67,7 @@ function renderLessons(filterStatus = 'all') {
                 statusText = 'Draft';
                 actions = `
                     <button class="action-small-btn edit-btn" onclick="editLesson(${lesson.id}, '${lesson.title}')"><i class="fas fa-edit"></i> Continue Editing</button>
-                    <button class="action-small-btn publish-btn" onclick="customAlert('Attempting to publish ${lesson.title}.')"><i class="fas fa-upload"></i> Publish</button>
+                    <button class="action-small-btn publish-btn" onclick="publishLesson(${lesson.id}, '${lesson.title}')"><i class="fas fa-upload"></i> Publish</button>
                     <button class="action-small-btn delete-btn" onclick="deleteLesson(${lesson.id}, '${lesson.title}')"><i class="fas fa-trash-alt"></i> Delete</button>
                 `;
             } else if (lesson.status === 'archived') {
@@ -44,6 +79,11 @@ function renderLessons(filterStatus = 'all') {
                 `;
             }
 
+            // Calculate activity count and views from related data
+            const activityCount = activitiesData.filter(a => a.lesson_id === lesson.id).length;
+            const views = lesson.views || 0;
+            const classes = lesson.classes || 0;
+
             lessonHtml += `
                 <div class="lesson-card status-${lesson.status}">
                     <div class="lesson-header-status">
@@ -51,10 +91,10 @@ function renderLessons(filterStatus = 'all') {
                         <i class="fas fa-ellipsis-v action-icon" onclick="customAlert('Options for ${lesson.title} lesson.')"></i>
                     </div>
                     <h4>${lesson.title}</h4>
-                    <p class="topic-detail">Grade Level: ${lesson.grade} | Activity Count: ${lesson.activities}</p>
+                    <p class="topic-detail">Grade Level: ${lesson.grade_level || 'N/A'} | Activity Count: ${activityCount}</p>
                     <div class="lesson-metrics">
-                        <span><i class="fas fa-eye"></i> ${lesson.views} Views</span>
-                        <span><i class="fas fa-users"></i> ${lesson.classes} Classes</span>
+                        <span><i class="fas fa-eye"></i> ${views} Views</span>
+                        <span><i class="fas fa-users"></i> ${classes} Classes</span>
                     </div>
                     ${actions}
                 </div>
@@ -75,7 +115,7 @@ function renderLessons(filterStatus = 'all') {
     lessonGrid.innerHTML = lessonHtml;
 }
 
-function filterLessons() {
+async function filterLessons() {
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) {
         renderLessons(statusFilter.value);
@@ -83,35 +123,42 @@ function filterLessons() {
     }
 }
 
-function initLessonCreation() {
+async function initLessonCreation() {
     showModal('createLessonModal');
     
     const form = document.getElementById('newLessonForm');
-    form.onsubmit = function(event) {
+    form.onsubmit = async function(event) {
         event.preventDefault();
 
-        let nextId = lessonsData.length > 0 ? Math.max(...lessonsData.map(l => l.id)) + 1 : 1;
         const title = document.getElementById('lessonTitle').value;
         const bgType = document.querySelector('input[name="bgType"]:checked').value;
         
-        const newLesson = {
-            id: nextId,
-            title: title,
-            grade: 'N/A', 
-            activities: 0,
-            status: 'draft', 
-            views: 0,
-            classes: 0,
-            lastEdit: 'just now',
-            bgType: bgType
-        };
+        try {
+            const response = await apiClient.createLesson({
+                action: 'create',
+                title: title,
+                content: '', // Empty content for new lesson
+                background_type: bgType
+            });
 
-        lessonsData.push(newLesson);
-
-        hideModal('createLessonModal');
-        editLesson(nextId, title);
+            if (response.success) {
+                hideModal('createLessonModal');
+                customAlert(`Lesson "${title}" created successfully!`);
+                
+                // Reload lessons data
+                await loadLessonsData();
+                renderLessons(document.getElementById('statusFilter')?.value || 'all');
+                
+                // Open editor for the new lesson
+                editLesson(response.lesson_id, title);
+            } else {
+                customAlert(`Error creating lesson: ${response.message}`);
+            }
+        } catch (error) {
+            console.error('Error creating lesson:', error);
+            customAlert('Failed to create lesson. Please try again.');
+        }
         
-        renderLessons(document.getElementById('statusFilter')?.value || 'all');
         form.reset();
     };
 }
@@ -128,10 +175,81 @@ function viewLesson(lessonId, title) {
     showModal('lessonViewerModal');
 }
 
-function deleteLesson(lessonId, title) {
-    customAlert(`Deleting lesson: ${title} (ID: ${lessonId})`);
+async function publishLesson(lessonId, title) {
+    try {
+        const response = await apiClient.publishLesson(lessonId);
+        
+        if (response.success) {
+            customAlert(`Lesson "${title}" published successfully!`);
+            
+            // Reload lessons data and re-render
+            await loadLessonsData();
+            renderLessons(document.getElementById('statusFilter')?.value || 'all');
+            
+            // Clear cache to refresh data
+            dynamicData.clearCache('lessons_data');
+        } else {
+            customAlert(`Error publishing lesson: ${response.message}`);
+        }
+    } catch (error) {
+        console.error('Error publishing lesson:', error);
+        customAlert('Failed to publish lesson. Please try again.');
+    }
 }
 
-function restoreLesson(lessonId, title) {
-    customAlert(`Restoring lesson: ${title} (ID: ${lessonId})`);
+async function deleteLesson(lessonId, title) {
+    if (confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
+        try {
+            // TODO: Implement delete API endpoint
+            customAlert(`Deleting lesson: ${title} (ID: ${lessonId})`);
+            
+            // For now, just remove from local data
+            lessonsData = lessonsData.filter(lesson => lesson.id !== lessonId);
+            renderLessons(document.getElementById('statusFilter')?.value || 'all');
+            
+        } catch (error) {
+            console.error('Error deleting lesson:', error);
+            customAlert('Failed to delete lesson. Please try again.');
+        }
+    }
 }
+
+async function restoreLesson(lessonId, title) {
+    try {
+        // TODO: Implement restore API endpoint
+        customAlert(`Restoring lesson: ${title} (ID: ${lessonId})`);
+        
+        // For now, just update local data
+        const lesson = lessonsData.find(l => l.id === lessonId);
+        if (lesson) {
+            lesson.status = 'draft';
+            renderLessons(document.getElementById('statusFilter')?.value || 'all');
+        }
+        
+    } catch (error) {
+        console.error('Error restoring lesson:', error);
+        customAlert('Failed to restore lesson. Please try again.');
+    }
+}
+
+function showErrorMessage(message) {
+    const content = document.getElementById('content');
+    if (content) {
+        content.innerHTML = `
+            <div class="error-message">
+                <h2>Error</h2>
+                <p>${message}</p>
+                <button class="action-button primary" onclick="location.reload()">
+                    <i class="fas fa-refresh"></i> Reload Page
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof initializeTeacherDashboard === 'function') {
+        initializeTeacherDashboard();
+    }
+});

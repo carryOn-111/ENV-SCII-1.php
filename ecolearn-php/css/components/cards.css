@@ -1,204 +1,97 @@
-/* Card Components */
-
-.card {
+/* Card Component Styles */
+.stat-card {
     background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    border: 1px solid #e0e0e0;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.card-header {
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 16px;
-    margin-bottom: 20px;
-}
-
-.card-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
-}
-
-.card-subtitle {
-    font-size: 14px;
-    color: #666;
-    margin-top: 4px;
-}
-
-.card-body {
-    flex: 1;
-}
-
-.card-text {
-    color: var(--text-color);
-    line-height: 1.6;
-    margin-bottom: 16px;
-}
-
-.card-footer {
-    border-top: 1px solid #e0e0e0;
-    padding-top: 16px;
-    margin-top: 20px;
+    padding: 30px 25px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-/* Card Variants */
-.card-primary {
-    border-left: 4px solid var(--primary-color);
+.analytic-stat-card {
+    padding: 15px 20px;
+    min-height: 120px; 
+    justify-content: space-between; 
 }
 
-.card-secondary {
-    border-left: 4px solid var(--secondary-color);
+.stat-card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
 }
 
-.card-success {
-    border-left: 4px solid var(--status-published);
-}
-
-.card-warning {
-    border-left: 4px solid var(--status-draft);
-}
-
-.card-danger {
-    border-left: 4px solid var(--status-archived);
-}
-
-/* Compact Card */
-.card-compact {
-    padding: 16px;
-    margin-bottom: 12px;
-}
-
-.card-compact .card-title {
-    font-size: 16px;
-}
-
-/* Interactive Card */
-.card-interactive {
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.card-interactive:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-.card-interactive:active {
-    transform: translateY(0);
-}
-
-/* Card Grid */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-/* Lesson Card Specific */
-.lesson-card {
-    position: relative;
-    overflow: hidden;
-}
-
-.lesson-card .card-image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 16px;
-}
-
-.lesson-card .lesson-status {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    color: white;
-}
-
-.lesson-card .lesson-duration {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.lesson-card .lesson-difficulty {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    background-color: #f0f0f0;
-    color: var(--text-color);
-}
-
-/* Stats Card */
-.stats-card {
-    text-align: center;
-    padding: 32px 24px;
-}
-
-.stats-card .stats-number {
-    font-size: 36px;
+.stat-card .value {
+    font-size: 2.2rem;
     font-weight: 700;
-    color: var(--primary-color);
-    display: block;
+    color: var(--text-color);
 }
 
-.stats-card .stats-label {
-    font-size: 14px;
-    color: #666;
-    margin-top: 8px;
+.analytic-stat-card .value {
+    font-size: 1.8rem; 
 }
 
-.stats-card .stats-icon {
-    font-size: 48px;
-    color: var(--primary-color);
-    margin-bottom: 16px;
-    opacity: 0.8;
-}
-
-/* Activity Card */
-.activity-card {
-    border-left: 4px solid var(--secondary-color);
-    position: relative;
-}
-
-.activity-card .activity-type {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 12px;
+.stat-card .label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
     font-weight: 500;
-    background-color: var(--secondary-color);
-    color: white;
+    margin-top: 5px;
 }
 
-.activity-card .activity-points {
+.chart-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.action-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #bdc3c7;
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 500;
-    color: var(--primary-color);
+    flex-direction: column;
+}
+
+.lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.lesson-card.status-published { border-left-color: var(--status-published); }
+.lesson-card.status-draft { border-left-color: var(--status-draft); }
+.lesson-card.status-archived { border-left-color: var(--status-archived); }
+.lesson-card.status-trending { border-left-color: #f1c40f; }
+.lesson-card.status-recommended { border-left-color: var(--secondary-color); }
+.lesson-card.status-advanced { border-left-color: #9b59b6; }
+.lesson-card.status-completed { border-left-color: var(--secondary-color); }
+.lesson-card.status-overdue { border-left-color: var(--status-archived); }
+.lesson-card.status-submitted { border-left-color: #f1c40f; }
+
+.qr-focus-card {
+    margin-bottom: 25px;
+    border-left: 5px solid var(--secondary-color);
+}
+
+.qr-focus-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+.feature-card {
+    min-height: 120px;
 }

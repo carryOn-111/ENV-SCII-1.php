@@ -1,77 +1,81 @@
 /* Responsive Design Utilities */
-
-/* Mobile First Approach */
-@media (max-width: 576px) {
-    .container {
-        padding: 0 15px;
+@media (max-width: 900px) {
+    .dashboard-main-area, .lessons-main-area {
+        flex-direction: column;
     }
     
     .sidebar {
-        width: 100%;
-        transform: translateX(-100%);
-    }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
+        width: 80px;
         padding: 10px;
+        align-items: center;
     }
     
-    .card {
-        margin-bottom: 15px;
+    .sidebar h2, .sidebar span {
+        display: none;
     }
     
-    .btn {
-        font-size: 14px;
-        padding: 8px 16px;
+    .sidebar .logo {
+        padding-bottom: 10px;
+        margin-bottom: 20px;
     }
-}
 
-/* Tablet */
-@media (min-width: 577px) and (max-width: 768px) {
-    .sidebar {
-        width: 200px;
+    .nav-item {
+        padding: 10px;
+        justify-content: center;
     }
     
     .main-content {
-        margin-left: 200px;
-        padding: 15px;
-    }
-}
-
-/* Desktop */
-@media (min-width: 769px) {
-    .sidebar {
-        width: 250px;
+        margin-left: 80px; 
     }
     
-    .main-content {
-        margin-left: 250px;
-        padding: 20px;
-    }
-}
-
-/* Large Desktop */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1140px;
-        margin: 0 auto;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .sidebar,
-    .btn,
-    .modal {
-        display: none !important;
+    .footer-nav-section {
+        padding-top: 5px;
+        border-top: none;
     }
     
-    .main-content {
-        margin-left: 0;
+    .scroll-arrow { 
+        display: none; 
+    }
+    
+    .library-header, .catalogue-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .library-search-bar, .catalogue-search-bar {
         width: 100%;
+        margin-top: 15px;
+    }
+    
+    .slider-container .lesson-card {
+        min-width: 80vw;
+        max-width: 80vw;
+    }
+    
+    .editor-content-area {
+        flex-direction: column;
+    }
+    
+    .editor-sidebar {
+        flex: none;
+        height: 200px;
+    }
+    
+    .modal-dialog.editor {
+        height: 95vh;
+    }
+}
+
+@media (max-width: 600px) {
+    .header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .header i {
+        font-size: 1.5rem;
+    }
+    
+    .lesson-grid {
+        grid-template-columns: 1fr;
     }
 }

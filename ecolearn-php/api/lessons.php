@@ -1,7 +1,18 @@
 <?php
 header('Content-Type: application/json');
+require_once '../config/session.php';
+require_once '../config/database.php';
 require_once '../includes/auth.php';
 require_once '../includes/functions.php';
+
+// Initialize database connection
+$database = new Database();
+$pdo = $database->getConnection();
+
+if (!$pdo) {
+    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+    exit();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -112,7 +123,7 @@ function updateLessonAPI() {
             echo json_encode(['success' => false, 'message' => 'Failed to update lesson']);
         }
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Database error']);
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     }
 }
 
@@ -151,8 +162,8 @@ function viewLessonAPI() {
         return;
     }
     
-    // Record progress for students
-    if ($user['role'] === 'student') {
+    // Record progress for students (not for guests to avoid database errors)
+    if ($user['role'] === 'student' && strpos($user['id'], 'guest_') !== 0) {
         recordProgress($user['id'], 'lesson_viewed', $lesson_id);
     }
     

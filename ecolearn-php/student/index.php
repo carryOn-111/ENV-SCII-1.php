@@ -1,5 +1,6 @@
 <?php
 require_once '../config/session.php';
+require_once '../includes/auth.php';
 require_once '../includes/functions.php';
 
 // Allow both students and guests
@@ -23,8 +24,9 @@ $available_activities = getPublishedActivities();
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/guest.css">
+    <link rel="stylesheet" href="../css/pages/lessons.css">
 </head>
-<body>
+<body data-user-role="student" data-default-section="dashboard">
     <?php if (isGuest()): ?>
     <div class="guest-banner">
         <i class="fas fa-info-circle"></i>
@@ -33,7 +35,7 @@ $available_activities = getPublishedActivities();
     <?php endif; ?>
 
     <!-- Sidebar Navigation -->
-    <nav class="sidebar">
+    <nav class="sidebar" id="studentNav">
         <div class="logo">
             <i class="fas fa-leaf fa-2x"></i>
             <h2>EcoLearn</h2>
@@ -67,11 +69,11 @@ $available_activities = getPublishedActivities();
         </div>
         
         <div class="footer-nav-section">
-            <div class="nav-item profile <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="loadStudentContent('profile')">
+            <div class="nav-item profile <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="window.location.href='profile.php'">
                 <i class="fas fa-user-circle"></i>
                 <span>Profile</span>
             </div>
-            <div class="nav-item settings" onclick="loadStudentContent('settings')">
+            <div class="nav-item settings" onclick="window.location.href='settings.php'">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </div>
@@ -83,7 +85,7 @@ $available_activities = getPublishedActivities();
     </nav>
 
     <!-- Main Content Area -->
-    <div class="main-content">
+    <div class="main-content dashboard-container">
         <header class="header">
             <i class="fas fa-graduation-cap"></i>
             <h1>Student Learning Space</h1>
@@ -96,151 +98,15 @@ $available_activities = getPublishedActivities();
         </header>
         
         <div id="content">
-            <?php if (isGuest()): ?>
-            <div class="guest-limitations">
-                <h5><i class="fas fa-exclamation-triangle"></i> Guest Mode Limitations</h5>
-                <ul>
-                    <li>Progress is not saved permanently</li>
-                    <li>Limited access to advanced features</li>
-                    <li>No personalized recommendations</li>
-                    <li>Cannot submit assignments for grading</li>
-                </ul>
-                <div class="guest-upgrade-prompt">
-                    <h6>Ready for the full experience?</h6>
-                    <p>Create a free account to unlock all features and save your progress!</p>
-                    <a href="../register.php" class="btn btn-light btn-sm">Create Account</a>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Student Dashboard Content -->
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3><?php echo $progress['lessons_viewed']; ?></h3>
-                        <p>Lessons Viewed</p>
-                        <small><?php echo count($available_lessons); ?> Available</small>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3><?php echo $progress['activities_completed']; ?></h3>
-                        <p>Activities Completed</p>
-                        <small><?php echo count($available_activities); ?> Available</small>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3><?php echo number_format($progress['average_score'], 1); ?>%</h3>
-                        <p>Average Score</p>
-                        <small><?php echo isGuest() ? 'Guest Mode' : 'Keep it up!'; ?></small>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>-</h3>
-                        <p>Achievements</p>
-                        <small>Coming Soon</small>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="dashboard-actions">
-                <h2>Quick Actions</h2>
-                <div class="action-grid">
-                    <button class="action-card" onclick="loadStudentContent('catalogue')">
-                        <i class="fas fa-layer-group"></i>
-                        <h3>Browse Library</h3>
-                        <p>Explore available lessons and activities</p>
-                    </button>
-                    
-                    <button class="action-card" onclick="showQRScanner()">
-                        <i class="fas fa-qrcode"></i>
-                        <h3>Scan QR Code</h3>
-                        <p>Access content shared by your teacher</p>
-                    </button>
-                    
-                    <button class="action-card <?php echo isGuest() ? 'guest-disabled' : ''; ?>" onclick="loadStudentContent('progress')">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>View Progress</h3>
-                        <p>Track your learning journey</p>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="recent-content">
-                <div class="recent-section">
-                    <h3>Available Lessons</h3>
-                    <div class="content-list">
-                        <?php if (empty($available_lessons)): ?>
-                            <p class="no-content">No lessons available yet. Check back later!</p>
-                        <?php else: ?>
-                            <?php foreach (array_slice($available_lessons, 0, 5) as $lesson): ?>
-                                <div class="content-item">
-                                    <div class="content-info">
-                                        <h4><?php echo htmlspecialchars($lesson['title']); ?></h4>
-                                        <p>By: <?php echo htmlspecialchars($lesson['teacher_name']); ?></p>
-                                        <p>Published: <?php echo formatDate($lesson['created_at']); ?></p>
-                                        <?php if (isset($lesson['access_code'])): ?>
-                                            <small class="text-muted">Access Code: <strong><?php echo $lesson['access_code']; ?></strong></small>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="content-actions">
-                                        <button class="action-small-btn view-btn" onclick="viewLesson(<?php echo $lesson['id']; ?>)">
-                                            <i class="fas fa-play"></i> Start
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                
-                <div class="recent-section">
-                    <h3>Available Activities</h3>
-                    <div class="content-list">
-                        <?php if (empty($available_activities)): ?>
-                            <p class="no-content">No activities available yet. Check back later!</p>
-                        <?php else: ?>
-                            <?php foreach (array_slice($available_activities, 0, 5) as $activity): ?>
-                                <div class="content-item">
-                                    <div class="content-info">
-                                        <h4><?php echo htmlspecialchars($activity['title']); ?></h4>
-                                        <p>Type: <?php echo $activity['type']; ?> | By: <?php echo htmlspecialchars($activity['teacher_name']); ?></p>
-                                        <?php if ($activity['due_date']): ?>
-                                            <p>Due: <?php echo formatDate($activity['due_date']); ?></p>
-                                        <?php endif; ?>
-                                        <?php if (isset($activity['access_code'])): ?>
-                                            <small class="text-muted">Access Code: <strong><?php echo $activity['access_code']; ?></strong></small>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="content-actions">
-                                        <button class="action-small-btn edit-btn" onclick="startActivity(<?php echo $activity['id']; ?>)">
-                                            <i class="fas fa-play-circle"></i> Start
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
+            <!-- Loading message while dynamic content loads -->
+            <div class="loading-message">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading dashboard...</p>
             </div>
         </div>
+        
+        <!-- Error container for connection issues -->
+        <div id="error-container" style="display: none;"></div>
     </div>
 
     <!-- QR Scanner Modal -->
@@ -270,52 +136,11 @@ $available_activities = getPublishedActivities();
         </div>
     </div>
 
+    <!-- Load dashboard loader script -->
+    <script src="../js/components/dashboard-loader.js"></script>
+    
+    <!-- Fallback functions for backward compatibility -->
     <script>
-        function loadStudentContent(section) {
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Add active class to clicked item
-            const navItem = document.querySelector(`.nav-item.${section}`);
-            if (navItem && !navItem.classList.contains('guest-disabled')) {
-                navItem.classList.add('active');
-            }
-            
-            // Load content based on section
-            switch(section) {
-                case 'catalogue':
-                    window.location.href = 'catalogue.php';
-                    break;
-                case 'lessons':
-                    window.location.href = 'lessons.php';
-                    break;
-                case 'activities':
-                    window.location.href = 'activities.php';
-                    break;
-                case 'progress':
-                    <?php if (isGuest()): ?>
-                    alert('Progress tracking requires an account. Please register to access this feature.');
-                    <?php else: ?>
-                    alert('Progress tracking coming soon!');
-                    <?php endif; ?>
-                    break;
-                case 'profile':
-                    <?php if (isGuest()): ?>
-                    alert('Profile management requires an account. Please register to access this feature.');
-                    <?php else: ?>
-                    alert('Profile management coming soon!');
-                    <?php endif; ?>
-                    break;
-                case 'dashboard':
-                    window.location.reload();
-                    break;
-                default:
-                    console.log('Loading:', section);
-            }
-        }
-        
         function showQRScanner() {
             document.getElementById('qrScannerModal').style.display = 'flex';
         }
@@ -372,160 +197,122 @@ $available_activities = getPublishedActivities();
             // Redirect to activity page
             window.location.href = 'activity-viewer.php?id=' + activityId;
         }
+        
+        // Fallback loadStudentContent for navigation compatibility
+        function loadStudentContent(section) {
+            // This will be overridden by the dynamic version when loaded
+            switch(section) {
+                case 'catalogue':
+                    window.location.href = 'catalogue.php';
+                    break;
+                case 'lessons':
+                    window.location.href = 'my-lessons.php';
+                    break;
+                case 'activities':
+                    window.location.href = 'my-activities.php';
+                    break;
+                case 'progress':
+                    <?php if (isGuest()): ?>
+                    alert('Progress tracking requires an account. Please register to access this feature.');
+                    <?php else: ?>
+                    alert('Progress tracking coming soon!');
+                    <?php endif; ?>
+                    break;
+                case 'profile':
+                    <?php if (isGuest()): ?>
+                    alert('Profile management requires an account. Please register to access this feature.');
+                    <?php else: ?>
+                    window.location.href = 'profile.php';
+                    <?php endif; ?>
+                    break;
+                case 'settings':
+                    window.location.href = 'settings.php';
+                    break;
+                case 'dashboard':
+                    window.location.reload();
+                    break;
+                default:
+                    console.log('Loading:', section);
+            }
+        }
+        
+        function setActiveNavItem(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const navItem = document.querySelector(`.nav-item.${section}`);
+            if (navItem && !navItem.classList.contains('guest-disabled')) {
+                navItem.classList.add('active');
+            }
+        }
     </script>
     
     <style>
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .loading-message {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
         }
         
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .stat-icon {
-            background: var(--primary-color);
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            font-size: 24px;
-        }
-        
-        .stat-content h3 {
-            margin: 0;
+        .loading-message i {
             font-size: 2rem;
-            color: var(--text-color);
-        }
-        
-        .stat-content p {
-            margin: 5px 0;
-            color: #7f8c8d;
-        }
-        
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .action-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: none;
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .action-card:hover:not(.guest-disabled) {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-        
-        .action-card i {
-            font-size: 2.5rem;
-            color: var(--primary-color);
             margin-bottom: 15px;
+            color: var(--primary-color);
         }
         
-        .recent-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        .recent-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .content-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        
-        .content-item:last-child {
-            border-bottom: none;
-        }
-        
-        .user-info {
-            color: #7f8c8d;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .no-content {
-            text-align: center;
-            color: #7f8c8d;
-            padding: 20px;
-        }
-        
-        .camera-placeholder {
+        .error-message {
             text-align: center;
             padding: 40px;
             background: #f8f9fa;
             border-radius: 10px;
-            margin: 20px 0;
+            margin: 20px;
+            border-left: 4px solid #e74c3c;
         }
         
-        .placeholder-icon {
-            color: #bdc3c7;
+        .error-message h2 {
+            color: #e74c3c;
             margin-bottom: 15px;
         }
         
-        .filter-group {
-            margin: 15px 0;
+        .error-message p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
         }
         
-        .filter-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        
-        .resource-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ecf0f1;
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
             border-radius: 8px;
-            font-size: 16px;
-            text-align: center;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
         }
         
-        .apply-filter-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
+        .notification-info {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .notification-success {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .notification-error {
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .notification button {
+            background: none;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
-        }
-        
-        .apply-filter-btn:hover {
-            background: #219a52;
+            color: #7f8c8d;
         }
     </style>
 </body>

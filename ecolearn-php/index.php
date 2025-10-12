@@ -1,4 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && $error['type'] === E_ERROR) {
+        die("Fatal error: {$error['message']} in {$error['file']} on line {$error['line']}");
+    }
+});
+
 require_once 'config/session.php';
 
 // If user is already logged in, redirect to appropriate dashboard

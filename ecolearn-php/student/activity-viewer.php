@@ -34,7 +34,7 @@ $existing_submission = $functions->getStudentSubmission($user['id'], $activity_i
     <!-- Activity Header -->
     <header class="activity-header">
         <div class="activity-nav">
-            <button class="nav-btn" onclick="window.location.href='activities.php'">
+            <button class="nav-btn" onclick="window.location.href='my-activities.php'">
                 <i class="fas fa-arrow-left"></i> Back to Activities
             </button>
             <div class="activity-info">
@@ -81,7 +81,7 @@ $existing_submission = $functions->getStudentSubmission($user['id'], $activity_i
                 </div>
                 
                 <div class="results-actions">
-                    <button class="action-button" onclick="window.location.href='activities.php'">
+                    <button class="action-button" onclick="window.location.href='my-activities.php'">
                         <i class="fas fa-list"></i> Back to Activities
                     </button>
                 </div>
@@ -344,6 +344,22 @@ $existing_submission = $functions->getStudentSubmission($user['id'], $activity_i
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: #219a52;
         }
         
         .activity-info h1 {

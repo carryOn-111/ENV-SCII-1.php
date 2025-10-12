@@ -15,6 +15,7 @@ $available_activities = getPublishedActivities();
     <title>EcoLearn Platform - Library</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/guest.css">
 </head>
 <body>
     <!-- Sidebar Navigation -->
@@ -35,12 +36,12 @@ $available_activities = getPublishedActivities();
                 <span>Library</span>
             </div>
             
-            <div class="nav-item student-lessons" onclick="window.location.href='lessons.php'">
+            <div class="nav-item student-lessons" onclick="window.location.href='my-lessons.php'">
                 <i class="fas fa-book-reader"></i>
                 <span>My Lessons</span>
             </div>
-            
-            <div class="nav-item student-activities" onclick="window.location.href='activities.php'">
+
+            <div class="nav-item student-activities" onclick="window.location.href='my-activities.php'">
                 <i class="fas fa-tasks"></i>
                 <span>My Activities</span>
             </div>
@@ -52,11 +53,11 @@ $available_activities = getPublishedActivities();
         </div>
         
         <div class="footer-nav-section">
-            <div class="nav-item profile">
+            <div class="nav-item profile" onclick="window.location.href='profile.php'">
                 <i class="fas fa-user-circle"></i>
                 <span>Profile</span>
             </div>
-            <div class="nav-item settings">
+            <div class="nav-item settings" onclick="window.location.href='settings.php'">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </div>

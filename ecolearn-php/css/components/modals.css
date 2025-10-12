@@ -1,265 +1,114 @@
-/* Modal Components */
-
+/* Modal Component Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1050;
-    display: flex;
-    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000; 
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    align-items: center;
+    display: none;
 }
 
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+.modal-overlay.active { 
+    display: flex;
 }
 
-.modal {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
+.modal-overlay.viewer {
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+}
+
+.modal-overlay.records {
+    z-index: 3000;
+}
+
+.modal-overlay.qr-gen {
+    z-index: 4000;
+}
+
+.modal-dialog {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     width: 90%;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
-    transform: scale(0.7) translateY(-50px);
-    transition: all 0.3s ease;
 }
 
-.modal-overlay.active .modal {
-    transform: scale(1) translateY(0);
-}
-
-.modal-header {
-    padding: 24px 24px 0 24px;
+.modal-dialog.lg {
+    padding: 20px;
+    max-width: 1000px;
+    height: 90vh;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    flex-direction: column;
 }
 
-.modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
+.modal-dialog.records-sm {
+    max-width: 700px;
 }
 
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #666;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+.modal-dialog.qr-gen-sm {
+    max-width: 450px;
+    text-align: center;
 }
 
-.modal-close:hover {
-    background-color: #f5f5f5;
-    color: var(--text-color);
-}
-
-.modal-body {
-    padding: 0 24px 24px 24px;
-}
-
-.modal-footer {
-    padding: 16px 24px 24px 24px;
-    border-top: 1px solid #e0e0e0;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* Modal Sizes */
-.modal-sm {
-    max-width: 300px;
-}
-
-.modal-lg {
-    max-width: 800px;
-}
-
-.modal-xl {
+.modal-dialog.editor {
     max-width: 1200px;
+    width: 95%;
+    height: 90vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-.modal-fullscreen {
-    max-width: 100%;
-    width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
+.modal-header-content {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid #eee; 
+    padding-bottom: 15px; 
+    margin-bottom: 20px;
 }
 
-/* Confirmation Modal */
-.modal-confirm .modal-body {
+.modal-close-btn {
+    background: none; 
+    border: none; 
+    font-size: 1.5rem; 
+    cursor: pointer; 
+    color: #7f8c8d;
+}
+
+.modal-text-center {
     text-align: center;
-    padding: 32px 24px;
 }
 
-.modal-confirm .confirm-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    color: var(--status-draft);
-}
-
-.modal-confirm.danger .confirm-icon {
-    color: var(--status-archived);
-}
-
-.modal-confirm.success .confirm-icon {
-    color: var(--status-published);
-}
-
-.modal-confirm .confirm-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-color);
-}
-
-.modal-confirm .confirm-message {
-    color: #666;
-    line-height: 1.5;
-}
-
-/* Loading Modal */
-.modal-loading .modal-body {
-    text-align: center;
-    padding: 48px 24px;
-}
-
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 16px auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-    color: #666;
-    font-size: 16px;
-}
-
-/* Image Modal */
-.modal-image {
-    max-width: 90vw;
-    max-height: 90vh;
-    padding: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
-.modal-image img {
-    width: 100%;
-    height: auto;
+.qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #eee;
+    margin-bottom: 20px;
     border-radius: 8px;
+    background-color: white;
 }
 
-/* Form Modal */
-.modal-form .modal-body {
-    padding: 24px;
+.camera-placeholder {
+    background: #ecf0f1; 
+    border: 1px dashed #ccc; 
+    padding: 50px 20px; 
+    text-align: center; 
+    border-radius: 8px; 
+    margin-bottom: 20px;
 }
 
-.modal-form .form-group:last-child {
-    margin-bottom: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 576px) {
-    .modal {
-        width: 95%;
-        margin: 20px;
-    }
-    
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-    
-    .modal-footer {
-        flex-direction: column;
-    }
-    
-    .modal-footer .btn {
-        width: 100%;
-    }
-}
-
-/* Animation Classes */
-.modal-fade-in {
-    animation: modalFadeIn 0.3s ease;
-}
-
-.modal-fade-out {
-    animation: modalFadeOut 0.3s ease;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.7) translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-@keyframes modalFadeOut {
-    from {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: scale(0.7) translateY(-50px);
-    }
-}
-
-/* Modal Backdrop */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1040;
-}
-
-/* Prevent body scroll when modal is open */
-body.modal-open {
-    overflow: hidden;
-}
-
-/* Modal Stack */
-.modal-overlay.stacked {
-    z-index: 1060;
-}
-
-.modal-overlay.stacked .modal-backdrop {
-    z-index: 1050;
+.placeholder-icon {
+    color: #95a5a6; 
+    margin-bottom: 10px;
+    font-size: 3rem; 
 }

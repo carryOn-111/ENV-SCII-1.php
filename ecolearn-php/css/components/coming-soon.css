@@ -1,0 +1,24 @@
+/* Coming Soon Styles */
+.coming-soon {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.coming-soon i {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.coming-soon h2 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.coming-soon p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    line-height: 1.6;
+}

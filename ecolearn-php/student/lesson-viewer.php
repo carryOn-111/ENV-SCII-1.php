@@ -33,7 +33,7 @@ $slides = $functions->getLessonSlides($lesson_id);
     <!-- Lesson Header -->
     <header class="lesson-header">
         <div class="lesson-nav">
-            <button class="nav-btn" onclick="window.location.href='lessons.php'">
+            <button class="nav-btn" onclick="window.location.href='my-lessons.php'">
                 <i class="fas fa-arrow-left"></i> Back to Lessons
             </button>
             <div class="lesson-info">
@@ -142,7 +142,7 @@ $slides = $functions->getLessonSlides($lesson_id);
             </div>
             
             <div class="modal-footer">
-                <button class="action-button" onclick="window.location.href='lessons.php'">
+                <button class="action-button" onclick="window.location.href='my-lessons.php'">
                     <i class="fas fa-list"></i> Back to Lessons
                 </button>
                 <button class="action-small-btn" onclick="window.location.href='index.php'">

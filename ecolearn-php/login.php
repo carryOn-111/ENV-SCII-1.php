@@ -6,12 +6,13 @@ $error_message = '';
 
 // If user is already logged in, redirect
 if (isLoggedIn()) {
+    $base_url = '/lms-project/ecolearn-php/';
     if ($_SESSION['user_role'] === 'teacher') {
-        header('Location: teacher/dashboard.php');
+        header('Location: ' . $base_url . 'teacher/dashboard.php');
     } else if ($_SESSION['user_role'] === 'student') {
-        header('Location: student/dashboard.php');
+        header('Location: ' . $base_url . 'student/dashboard.php');
     } else if ($_SESSION['user_role'] === 'guest') {
-        header('Location: student/dashboard.php');
+        header('Location: ' . $base_url . 'student/dashboard.php');
     }
     exit();
 }

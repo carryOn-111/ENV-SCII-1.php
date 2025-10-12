@@ -7,8 +7,8 @@
 // Database configuration - UPDATE THESE VALUES
 $host = 'localhost';
 $dbname = 'ecolearn_db';
-$username = 'your_username';  // Change this
-$password = 'your_password';  // Change this
+$username = 'root';  // Change this
+$password = '';  // Change this
 
 echo "<h1>EcoLearn Platform Setup</h1>";
 
